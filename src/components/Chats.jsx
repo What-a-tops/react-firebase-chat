@@ -3,6 +3,7 @@ import { doc, onSnapshot } from "firebase/firestore"
 import { db } from '../firebase';
 import { AuthContext } from '../context/AuthContext'
 import { ChatContext } from '../context/ChatContext';
+import ImageChecker from "./ImageChecker.jsx";
 
 export const Chats = () => {
     const [chats, setChats] = useState([])
@@ -10,8 +11,10 @@ export const Chats = () => {
     const { dispatch } = useContext(ChatContext)
 
     useEffect(() => {
+
         const getChats = () => {
             const unsub = onSnapshot(doc(db, "userChats", currentUser.uid), (doc) => {
+                console.log(doc.data())
                 setChats(doc.data())
             });
     
@@ -29,15 +32,20 @@ export const Chats = () => {
 
     return (
         <div className='chats'>
-            {Object.entries(chats)?.sort((a, b) => b[1].date - a[1].date).map((chat) => (
+            {
+                // console.log(chats)
+               chats &&
+                Object.entries(chats)?.sort((a, b) => b[1].date - a[1].date).map((chat) => (
                 <div className="userChat" key={chat[0]} onClick={() => handleSelect(chat[1].userInfo)}>
-                    <img src={chat[1].userInfo.photoURL} alt="" />
+                    {/*<img src={chat[1].userInfo.photoURL} alt="" />*/}
+                    <ImageChecker photoUrl={chat[1].userInfo.photoURL} />
                     <div className="userChatInfo">
                         <span>{chat[1].userInfo.displayName}</span>
                         <p>{chat[1].lastMessage?.text}</p>
                     </div>
                 </div>
-            ))}
+            ))
+            }
         </div>
     )
 }

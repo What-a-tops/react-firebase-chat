@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useRef } from 'react'
 import { AuthContext } from '../context/AuthContext'
 import { ChatContext } from '../context/ChatContext'
+import ImageChecker from "./ImageChecker.jsx";
+
 
 export const Message = ({message}) => {
     const { currentUser } = useContext(AuthContext)
@@ -12,18 +14,26 @@ export const Message = ({message}) => {
         ref.current?.scrollIntoView({behavior: "smooth"})
     }, [message])
 
+    console.log(message.senderId + ' ' + currentUser.uid)
+
     return (
         <div 
         ref={ref}
-        className={`message ${message === currentUser.uid && "owner"}`}>
+        className={`message ${message.senderId === currentUser.uid && "owner"}`}>
             <div className="messageInfo">
-                <img 
-                    src={
-                        message.senderId === currentUser.uid 
+                {/*<img*/}
+                {/*    src={*/}
+                {/*        message.senderId === currentUser.uid*/}
+                {/*        ? currentUser.photoURL*/}
+                {/*        : data.user.photoURL*/}
+                {/*}*/}
+                {/*    alt=""*/}
+                {/*/>*/}
+                <ImageChecker photoUrl={
+                    message.senderId === currentUser.uid
                         ? currentUser.photoURL
-                        : data.user.photoURL} 
-                    alt="" 
-                />
+                        : data.user.photoURL
+                } />
                 <span>Just now</span>
             </div>
             <div className="messageContent">
